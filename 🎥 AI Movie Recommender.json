@@ -1,0 +1,362 @@
+{
+  "name": "🎥 AI Movie Recommender",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "# https://github.com/REDOANUZZAMAN",
+        "height": 80,
+        "width": 688,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        22640,
+        7184
+      ],
+      "typeVersion": 1,
+      "id": "414eaa7c-6930-43f5-85e0-8a5ca623cb9e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "formTitle": "🎥 AI Movie Recommender",
+        "formDescription": "Discover your next favorite movie! Select a genre below, and our AI will instantly suggest the top 20 movies in that category — complete with ratings and release years. 🍿",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Genre",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Action"
+                  },
+                  {
+                    "option": "Adventure"
+                  },
+                  {
+                    "option": "Animation"
+                  },
+                  {
+                    "option": "Comedy"
+                  },
+                  {
+                    "option": "Crime"
+                  },
+                  {
+                    "option": "Documentary"
+                  },
+                  {
+                    "option": "Drama"
+                  },
+                  {
+                    "option": "Family"
+                  },
+                  {
+                    "option": "Fantasy"
+                  },
+                  {
+                    "option": "History"
+                  },
+                  {
+                    "option": "Horror"
+                  },
+                  {
+                    "option": "Music"
+                  },
+                  {
+                    "option": "Mystery"
+                  },
+                  {
+                    "option": "Romance"
+                  },
+                  {
+                    "option": "Science Fiction"
+                  },
+                  {
+                    "option": "TV Movie"
+                  },
+                  {
+                    "option": "Thriller"
+                  },
+                  {
+                    "option": "War"
+                  },
+                  {
+                    "option": "Western"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "customCss": "/* NUCLEAR OPTION - Remove ALL white */\n* {\n    color: #b8b8d1 !important;\n    background-color: #0c0c1a !important;\n    border-color: #4a4a8a !important;\n}\n\n.form-wrapper {\n    background: #0c0c1a !important;\n    border: 1px solid #4a4a8a !important;\n    padding: 25px !important;\n    border-radius: 8px !important;\n}\n\nh1 {\n    color: #d4af37 !important;\n    text-align: center !important;\n}\n\nlabel {\n    color: #d4af37 !important;\n    font-weight: bold !important;\n}\n\nselect, button, input {\n    background: #080814 !important;\n    border: 1px solid #6b6b9e !important;\n    color: #b8b8d1 !important;\n}\n\nbutton, input[type=\"submit\"] {\n    background: #2d2d5a !important;\n    color: #d4af37 !important;\n}"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        22272,
+        7344
+      ],
+      "id": "d9c39e96-e87c-4a28-8c2a-d91ed3d5c1e7",
+      "name": "On form submission",
+      "webhookId": "bd61f196-dfda-4f19-a20a-e2ca2301365f"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "respondWith": "showText",
+        "responseText": "={{ $json.moviesHtml }}"
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        23392,
+        7344
+      ],
+      "id": "ab9b09c9-93ab-4071-90f5-175f5fe7f342",
+      "name": "Form",
+      "webhookId": "7282c4f3-6730-4802-8eb2-ec87cb016347"
+    },
+    {
+      "parameters": {
+        "jsCode": "let movies = $input.all().map(item => item.json);\n\nlet html = `\n<style>\n  body {\n    font-family: 'Georgia', 'Times New Roman', serif;\n    margin: 0;\n    padding: 0;\n    background: #0c0c1a;\n  }\n  .movie-container {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n    gap: 25px;\n    padding: 25px;\n    justify-items: center;\n  }\n  .movie-card {\n    background: linear-gradient(135deg, #1a1a2e, #16213e);\n    border-radius: 15px;\n    box-shadow: 0 6px 15px rgba(74, 74, 138, 0.3);\n    border: 1px solid #4a4a8a;\n    overflow: hidden;\n    width: 100%;\n    max-width: 300px;\n    transition: transform 0.3s, box-shadow 0.3s;\n    cursor: pointer;\n    position: relative;\n  }\n  .movie-card:hover {\n    transform: translateY(-7px);\n    box-shadow: 0 12px 25px rgba(212, 175, 55, 0.3);\n    border-color: #d4af37;\n  }\n  .movie-card img {\n    width: 100%;\n    height: 400px;\n    object-fit: cover;\n    display: block;\n    border-bottom: 1px solid #4a4a8a;\n  }\n  .movie-content {\n    padding: 20px;\n  }\n  .movie-title {\n    font-size: 1.2rem;\n    font-weight: bold;\n    margin-bottom: 8px;\n    color: #d4af37;\n    line-height: 1.3;\n  }\n  .movie-details {\n    font-size: 0.85rem;\n    color: #8d8db3;\n    margin-bottom: 10px;\n    line-height: 1.4;\n  }\n  .movie-rating {\n    font-size: 0.9rem;\n    margin-bottom: 12px;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n  }\n  .rating-number {\n    color: #d4af37;\n    font-weight: bold;\n    font-size: 1rem;\n  }\n  .stars {\n    display: inline-block;\n    color: #d4af37;\n    font-size: 1rem;\n  }\n  .movie-plot {\n    font-size: 0.85rem;\n    color: #b8b8d1;\n    line-height: 1.4;\n    display: -webkit-box;\n    -webkit-line-clamp: 3;\n    -webkit-box-orient: vertical;\n    overflow: hidden;\n  }\n  .movie-meta {\n    display: flex;\n    justify-content: space-between;\n    font-size: 0.8rem;\n    color: #6b6b9e;\n    margin-top: 10px;\n  }\n  @media (max-width: 600px) {\n    .movie-container {\n      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n      padding: 15px;\n      gap: 20px;\n    }\n    .movie-card {\n      max-width: 100%;\n    }\n  }\n</style>\n\n<div class=\"movie-container\">\n  ${movies.map(movie => {\n    // Convert IMDb rating to stars (0-10 scale)\n    const imdbRating = parseFloat(movie.imdbRating);\n    const starCount = Math.round(imdbRating);\n    let stars = '★'.repeat(starCount) + '☆'.repeat(10 - starCount);\n    \n    // Get Rotten Tomatoes rating if available\n    const rtRating = movie.Ratings.find(r => r.Source === 'Rotten Tomatoes');\n    const rtValue = rtRating ? rtRating.Value : 'N/A';\n    \n    return `\n      <div class=\"movie-card\" onclick=\"alert('Title: ${movie.Title}\\\\nYear: ${movie.Year}\\\\nRated: ${movie.Rated}\\\\nRuntime: ${movie.Runtime}\\\\nGenre: ${movie.Genre}\\\\nDirector: ${movie.Director}\\\\nIMDb Rating: ${movie.imdbRating}\\\\nRotten Tomatoes: ${rtValue}\\\\n\\\\nPlot: ${movie.Plot}')\">\n        <img src=\"${movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/300x400/1a1a2e/d4af37?text=No+Image'}\" alt=\"${movie.Title}\">\n        <div class=\"movie-content\">\n          <div class=\"movie-title\">${movie.Title}</div>\n          <div class=\"movie-details\">\n            ${movie.Year} • ${movie.Runtime} • ${movie.Rated}\n          </div>\n          <div class=\"movie-rating\">\n            <span class=\"rating-number\">${movie.imdbRating}/10</span>\n            <span class=\"stars\">${stars}</span>\n          </div>\n          <div class=\"movie-plot\">${movie.Plot}</div>\n          <div class=\"movie-meta\">\n            <span>${movie.Genre.split(',')[0]}</span>\n            <span>${rtValue}</span>\n          </div>\n        </div>\n      </div>\n    `;\n  }).join('')}\n</div>\n`;\n\nreturn [{ json: { moviesHtml: html } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        23200,
+        7344
+      ],
+      "id": "8bcd6886-d6f2-4fe0-bffa-260e97a5d8ab",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "url": "http://www.omdbapi.com",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "t",
+              "value": "={{ $json.movieTitle }}"
+            },
+            {
+              "name": "apikey",
+              "value": "Your_api_key"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        22992,
+        7344
+      ],
+      "id": "20a7397a-7a1c-4f01-a136-6fc58f9124da",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=gimme top 100 movies on {{ $json.Genre }} based on imdb.",
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "={\n  \"system_prompt\": {\n    \"primary_task\": {\n      \"role\": \"AI Movie Assistant\",\n      \"input\": \"User provides a movie genre via {{ $json.Genre }}\",\n      \"output_format\": {\n        \"type\": \"JSON array\",\n        \"structure\": \"[\\\"Movie 1\\\", \\\"Movie 2\\\", ..., \\\"Movie 20\\\"]\",\n        \"requirements\": [\n          \"Exactly 20 top movies of the specified genre\",\n          \"Only movie titles, no descriptions or metadata\",\n          \"No extra text or explanation outside the JSON array\",\n          \"Movies must be well-known and highly rated in the genre\"\n        ]\n      }\n    },\n    \n    \"recency_guidelines\": {\n      \"priority\": \"Latest to backdated\",\n      \"sorting_strategy\": \"Organize from newest releases to classic films\",\n      \"date_handling\": \"Include mix of recent (2020s), modern (2010s), and classic films\",\n      \"knowledge_cutoff\": \"January 2025\"\n    },\n    \n    \"quality_standards\": {\n      \"selection_criteria\": [\n        \"Critical acclaim and ratings\",\n        \"Cultural impact and popularity\",\n        \"Genre-defining characteristics\",\n        \"Diversity in time periods and styles\"\n      ],\n      \"minimum_count\": 20,\n      \"validation\": \"Ensure all 20 slots are filled with distinct titles\"\n    },\n    \n    \"response_format\": {\n      \"strict_json\": true,\n      \"no_markdown\": true,\n      \"no_explanations\": true,\n      \"valid_json_only\": true\n    },\n    \n    \"error_handling\": {\n      \"insufficient_movies\": \"If genre has fewer than 20 notable films, include highly regarded films from adjacent sub-genres\",\n      \"invalid_genre\": \"If genre is unclear, interpret broadly and provide best matches\"\n    }\n  }\n}\n```\n\n**Simplified Version for Direct Use:**\n```\nYou are an AI Movie Assistant. \n\nPRIMARY TASK:\n- Input: Movie genre from {{ $json.Genre }}\n- Output: JSON array of exactly 20 movie titles\n- Format: [\"Movie 1\", \"Movie 2\", ..., \"Movie 20\"]\n\nORGANIZATION PRIORITY (Latest to Backdated):\n1. Include recent releases (2020s) first when ranking\n2. Follow with modern classics (2010s)\n3. Include essential earlier films (2000s and before)\n4. Balance recency with genre-defining importance\n\nSELECTION CRITERIA:\n- Top-rated and critically acclaimed\n- Genre-defining or culturally significant\n- Mix of recent and classic films\n- Exactly 20 distinct titles\n\nOUTPUT REQUIREMENTS:\n- Pure JSON array only\n- No explanations, descriptions, or extra text\n- Valid JSON syntax\n- Movie titles only (no years or metadata)\n\nVALIDATION:\n- Confirm exactly 20 movies\n- Ensure all are relevant to the genre\n- No duplicates"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        22496,
+        7344
+      ],
+      "id": "7f882194-710d-4e89-b538-ce3a77a62122",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the AI output text\nconst text = $json[\"output\"];\n\n// Extract JSON array from the text\nconst match = text.match(/\\[([\\s\\S]*?)\\]/);\n\nif (match) {\n  const movies = JSON.parse(match[0]);\n  return movies.map(movie => ({ json: { movieTitle: movie } }));\n} else {\n  return [];\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        22800,
+        7344
+      ],
+      "id": "f7af212b-b730-404d-973b-ae45c06a1dba",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "noop",
+      "typeVersion": 1,
+      "position": [
+        23584,
+        7344
+      ],
+      "id": "21b35e23-0f26-4dd3-a31d-89d7bab1b2af"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        22368,
+        7600
+      ],
+      "id": "dc498b04-c691-4d76-9bd3-a62b13343a36",
+      "name": "2.5 pro",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "6jNmEiKkspfLhOow",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        22544,
+        7616
+      ],
+      "id": "f46ebabe-36f3-47b9-b6c1-057d732c13fe",
+      "name": "5.0 mini",
+      "credentials": {
+        "openAiApi": {
+          "id": "oCF4p66FWK7NFehg",
+          "name": "Premium"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form": {
+      "main": [
+        [
+          {
+            "node": "noop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.5 pro": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5.0 mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9bb6ff0c-34f5-4c2b-b816-b230ea8a48b2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3ea5ee65f04b27a744235742229cd33fb9bc1c1a8cd25b6ec8329b2619003115"
+  },
+  "id": "aABkxEso7UJYqtFW",
+  "tags": [
+    {
+      "createdAt": "2025-10-16T16:21:37.376Z",
+      "updatedAt": "2025-10-16T16:21:37.376Z",
+      "id": "sB8amNfmY6vlm7UO",
+      "name": "AI"
+    }
+  ]
+}
